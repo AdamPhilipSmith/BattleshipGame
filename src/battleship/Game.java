@@ -1,55 +1,101 @@
 package battleship;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+
 
 public class Game {
 
-    private ArrayList<String> shipLocations = new ArrayList<String>();
+    private static ArrayList<String> hits = new ArrayList();
+    private static ArrayList<String> misses = new ArrayList();
+    private static ArrayList<String> shipCoords = new ArrayList();
     private static final char[] characters = new char[] {'A','B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'};
-    private static ArrayList <String> shipCoords = new ArrayList();
-    private static boolean coordsTaken = false;
-    private static ArrayList <String> hits = new ArrayList();
-    private static ArrayList <String> misses = new ArrayList();
+    private static int guesses = 50;
+    private static int shipLives = 13;
+    private static boolean moveTaken = false;
+    private static boolean hit = false;
+    private static boolean gameOver = false;
 
-    public static void main(String[] args){
-       String possibleCharacters =  "Ӿ ӿ Ө \t– — \t― • ‖ ‗ ₪ Ⅳ ⇆ ⇌ ⇼ ⇿";
-       //Grid.printGrid();
-       spawnShip(5);
-       spawnShip(4);
-       spawnShip(4);
-       System.out.println(shipCoords);
+    public static void start(){
 
+        // spawns 1x Battleship
+        spawnShip(5);
+
+        //spawns 2x Destroyers
+        spawnShip(4);
+        spawnShip(4);
+
+        while(gameOver == false) {
+            Grid.printGrid(hits, misses);
+
+            if( moveTaken == true){
+                if (hit == true){
+                    System.out.println("DIRECT HIT!");
+                }
+                else{
+                    System.out.println("You missed!");
+                }
+            }
+            System.out.println("Guesses Left: " + guesses);
+            String guess = getUserInput();
+
+            if (shipCoords.contains(guess)){
+                hits.add(guess);
+                hit = true;
+                shipLives --;
+            }
+            else{
+                misses.add(guess);
+                hit = false;
+            }
+
+            guesses --;
+            moveTaken = true;
+
+            if (shipLives == 0){
+                System.out.println("Congratulations, you have sunk all the ships!");
+                gameOver = true;
+            }
+
+            if (guesses == 0){
+                System.out.println("You failed! You ran out of guesses");
+                gameOver = true;
+            }
+
+
+
+        }
     }
-
+    /*
+     * Gets a random direction for the ship to be placed from random Coords,
+     * re-rolling until it can be placed on the board in that direction
+     * without going off the side of the board or on top of another ship
+     */
     public static void spawnShip(int shipLength){
 
         boolean shipPlaced = false;
 
-        /*
-        * Gets a random direction for the ship to be placed from Coords,
-        * re-rolling until it can be placed on the board in that direction
-        * without going off the side of the board or on top of another ship
-        */
-
         while(!shipPlaced){
+            ArrayList <String> tempCoords = new ArrayList();
 
             //gets random starting cords for the ship for the column and row position between 0-10
             int xStartPosition = (int) (Math.random() * 10);
             int yStartPosition = (int) (Math.random() * 10);
-            //gives random number between 0-3 to correspond to cardinal directions.
+
+            //gets random number between 0-3 to correspond to cardinal directions.
             int direction = (int) (Math.random() * 4);
 
-            ArrayList <String> tempCoords = new ArrayList();
-            //Checks to see if it's possible for the ship to be placed on the board in this direction
+            //Checks to see if it's possible for the ship to be placed on the board each direction
             if (direction == 0 && (yStartPosition-(shipLength-1)) >= 0 ){
 
                 for(int i=0; i<shipLength; i++){
-                    coordsTaken=false;
                     String stringCoords = String.valueOf(characters[xStartPosition]);
                     stringCoords += String.valueOf(yStartPosition-i);
 
                     tempCoords.add(stringCoords);
-                    //checks to see if a ship is already placed at this coord. If so, clears tempcoords it and breaks loop.
+                    //checks to see if a ship is already placed at this coord. If so, clears tempcoords and breaks the loop.
                     if (shipCoords.contains(stringCoords)){
                         tempCoords.clear();
                         break;
@@ -60,14 +106,12 @@ public class Game {
                 if(!tempCoords.isEmpty()){
                     shipCoords.addAll(tempCoords);
                     shipPlaced = true;
-                    System.out.println("n" + direction);
                 }
 
             }
             if (direction == 1 && (xStartPosition+(shipLength-1)) < 10 ){
 
                 for(int i=0; i<shipLength; i++){
-                    coordsTaken=false;
                     String stringCoords = String.valueOf(characters[xStartPosition+i]);
                     stringCoords += String.valueOf(yStartPosition);
 
@@ -83,14 +127,12 @@ public class Game {
                 if(!tempCoords.isEmpty()){
                     shipCoords.addAll(tempCoords);
                     shipPlaced = true;
-                    System.out.println("e" + direction);
                 }
 
             }
             if (direction == 2 && (yStartPosition+(shipLength-1)) < 10 ){
 
                 for(int i=0; i<shipLength; i++){
-                    coordsTaken=false;
                     String stringCoords = String.valueOf(characters[xStartPosition]);
                     stringCoords += String.valueOf(yStartPosition+i);
 
@@ -106,12 +148,10 @@ public class Game {
                 if(!tempCoords.isEmpty()){
                     shipCoords.addAll(tempCoords);
                     shipPlaced = true;
-                    System.out.println("s" + direction);
                 }
             }
             if (direction == 3 && xStartPosition-(shipLength-1) >= 0){
                 for(int i=0; i<shipLength; i++){
-                    coordsTaken=false;
                     String stringCoords = String.valueOf(characters[xStartPosition-i]);
                     stringCoords += String.valueOf(xStartPosition);
 
@@ -127,7 +167,6 @@ public class Game {
                 if(!tempCoords.isEmpty()){
                     shipCoords.addAll(tempCoords);
                     shipPlaced = true;
-                    System.out.println("w" + direction);
                 }
             }
         }
@@ -136,5 +175,18 @@ public class Game {
 
     }
 
-
+    public static String getUserInput() {
+        String inputLine = null;
+        System.out.print("Enter your coordinates:" + " ");
+        try {
+            BufferedReader is = new BufferedReader(new InputStreamReader(System.in));
+            inputLine = is.readLine();
+            if (inputLine.length() == 0)
+                return null;
+        } catch (IOException e) {
+            System.out.println("IOException: " + e);
+        }
+        //converts to uppercase in case user uses lowercase
+        return inputLine.toUpperCase();
+    }
 }
