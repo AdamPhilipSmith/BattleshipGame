@@ -17,6 +17,7 @@ public class Game {
     private static boolean moveTaken = false;
     private static boolean hit = false;
     private static boolean gameOver = false;
+    private static boolean duplicateEntry = false;
 
     public static void start(){
 
@@ -31,30 +32,50 @@ public class Game {
             Grid.printGrid(hits, misses);
 
             if( moveTaken == true){
-                if (hit == true){
+                if(duplicateEntry == true){
+                    System.out.println("You have already checked this Coordinate.");
+                }
+
+                else if (hit == true){
                     System.out.println("DIRECT HIT!");
                 }
                 else{
                     System.out.println("You missed!");
                 }
             }
+            duplicateEntry = false;
             System.out.println("Guesses Left: " + guesses);
             String guess = getUserInput();
 
             if (shipCoords.contains(guess)){
-                hits.add(guess);
-                hit = true;
-                shipLives --;
+
+                if (!hits.contains(guess)){//checks the hit is a new hit
+                    hits.add(guess);
+                    hit = true;
+                    shipLives --;
+                    guesses --;
+                }
+                else{
+                    duplicateEntry = true;
+                }
+
             }
             else{
-                misses.add(guess);
-                hit = false;
+                if (!misses.contains(guess)){
+                    misses.add(guess);
+                    hit = false;
+                    guesses --;
+                }
+                else{
+                    duplicateEntry = true;
+                }
+
             }
 
-            guesses --;
             moveTaken = true;
 
             if (shipLives == 0){
+                //Grid.printGrid(hits, misses);//TODO test this tomorrow
                 System.out.println("Congratulations, you have sunk all the ships!");
                 gameOver = true;
             }
@@ -87,20 +108,17 @@ public class Game {
             //gets random number between 0-3 to correspond to cardinal directions.
             int direction = (int) (Math.random() * 4);
 
-            //Checks to see if it's possible for the ship to be placed on the board each direction
+            //Following conditionals to see if it's possible for the ship to be placed on the board for each direction
             if (direction == 0 && (yStartPosition-(shipLength-1)) >= 0 ){
 
                 for(int i=0; i<shipLength; i++){
-                    String stringCoords = String.valueOf(characters[xStartPosition]);
-                    stringCoords += String.valueOf(yStartPosition-i);
-
+                    String stringCoords = characters[xStartPosition] + String.valueOf(yStartPosition-i);
                     tempCoords.add(stringCoords);
                     //checks to see if a ship is already placed at this coord. If so, clears tempcoords and breaks the loop.
                     if (shipCoords.contains(stringCoords)){
                         tempCoords.clear();
                         break;
                     }
-
 
                 }
                 if(!tempCoords.isEmpty()){
@@ -112,9 +130,7 @@ public class Game {
             if (direction == 1 && (xStartPosition+(shipLength-1)) < 10 ){
 
                 for(int i=0; i<shipLength; i++){
-                    String stringCoords = String.valueOf(characters[xStartPosition+i]);
-                    stringCoords += String.valueOf(yStartPosition);
-
+                    String stringCoords = characters[xStartPosition+i] + String.valueOf(yStartPosition);
                     tempCoords.add(stringCoords);
                     //checks to see if a ship is already placed at this coord. If so, clears tempcoords it and breaks loop.
                     if (shipCoords.contains(stringCoords)){
@@ -133,9 +149,7 @@ public class Game {
             if (direction == 2 && (yStartPosition+(shipLength-1)) < 10 ){
 
                 for(int i=0; i<shipLength; i++){
-                    String stringCoords = String.valueOf(characters[xStartPosition]);
-                    stringCoords += String.valueOf(yStartPosition+i);
-
+                    String stringCoords = characters[xStartPosition] + String.valueOf(yStartPosition+i);
                     tempCoords.add(stringCoords);
                     //checks to see if a ship is already placed at this coord. If so, clears tempcoords it and breaks loop.
                     if (shipCoords.contains(stringCoords)){
@@ -152,17 +166,13 @@ public class Game {
             }
             if (direction == 3 && xStartPosition-(shipLength-1) >= 0){
                 for(int i=0; i<shipLength; i++){
-                    String stringCoords = String.valueOf(characters[xStartPosition-i]);
-                    stringCoords += String.valueOf(xStartPosition);
-
+                    String stringCoords = characters[xStartPosition-i] +String.valueOf(xStartPosition);
                     tempCoords.add(stringCoords);
                     //checks to see if a ship is already placed at this coord. If so, clears tempcoords it and breaks loop.
                     if (shipCoords.contains(stringCoords)){
                         tempCoords.clear();
                         break;
                     }
-
-
                 }
                 if(!tempCoords.isEmpty()){
                     shipCoords.addAll(tempCoords);
@@ -174,16 +184,17 @@ public class Game {
 
 
     }
-
+    //TODO handle guesses outside coords or not letter+number
     public static String getUserInput() {
         String inputLine = null;
-        System.out.print("Enter your coordinates:" + " ");
+        System.out.print("Enter coordinates:" + " ");
         try {
             BufferedReader is = new BufferedReader(new InputStreamReader(System.in));
             inputLine = is.readLine();
             if (inputLine.length() == 0)
                 return null;
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             System.out.println("IOException: " + e);
         }
         //converts to uppercase in case user uses lowercase
