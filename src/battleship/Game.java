@@ -11,6 +11,7 @@ public class Game {
     private static ArrayList<String> hits = new ArrayList();
     private static ArrayList<String> misses = new ArrayList();
     private static ArrayList<String> shipCoords = new ArrayList();
+    private static ArrayList<BattleShip> ships = new ArrayList();
     private static final char[] characters = new char[] {'A','B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'};
     private static int guesses = 50;
     private static int shipLives = 13;
@@ -19,6 +20,7 @@ public class Game {
     private static boolean gameOver = false;
     private static boolean duplicateEntry = false;
 
+    //TODO add functionality for 'sink'
     public static void start(){
 
         // spawns 1x Battleship
@@ -54,6 +56,20 @@ public class Game {
                     hit = true;
                     shipLives --;
                     guesses --;
+                    System.out.println(ships);
+
+                    for (BattleShip ship : ships){// updates ships, removing hit tiles and telling us if successful
+                        //ship.printCoords();
+                        //System.out.println(ship.getType());
+                        if (ship.containsCoords(guess)){
+                            System.out.println("test");
+                            ship.removeCoord(guess);// removes guess from ships 'lives'
+                            if( ship.isDead()){
+                                System.out.println("test2");
+                                System.out.println("YOU HAVE SUNK A " + ship.getType()+ "!");
+                            }
+                        }
+                    }
                 }
                 else{
                     duplicateEntry = true;
@@ -109,6 +125,8 @@ public class Game {
             int direction = (int) (Math.random() * 4);
 
             //Following conditionals to see if it's possible for the ship to be placed on the board for each direction
+
+
             if (direction == 0 && (yStartPosition-(shipLength-1)) >= 0 ){
 
                 for(int i=0; i<shipLength; i++){
@@ -123,6 +141,15 @@ public class Game {
                 }
                 if(!tempCoords.isEmpty()){
                     shipCoords.addAll(tempCoords);
+                    System.out.println(tempCoords);
+                    if (tempCoords.size() == 4) {
+                        BattleShip ship = new BattleShip("Destroyer", tempCoords);
+                        ships.add(ship);
+                    }
+                    else{
+                        BattleShip ship = new BattleShip("Battleship", tempCoords);
+                        ships.add(ship);
+                    }
                     shipPlaced = true;
                 }
 
@@ -142,6 +169,15 @@ public class Game {
                 }
                 if(!tempCoords.isEmpty()){
                     shipCoords.addAll(tempCoords);
+                    System.out.println(tempCoords);
+                    if (tempCoords.size() == 4) {
+                        BattleShip ship = new BattleShip("Destroyer", tempCoords);//TODO issue with adding temp coords
+                        ships.add(ship);
+                    }
+                    else{
+                        BattleShip ship = new BattleShip("Battleship", tempCoords);
+                        ships.add(ship);
+                    }
                     shipPlaced = true;
                 }
 
@@ -161,6 +197,15 @@ public class Game {
                 }
                 if(!tempCoords.isEmpty()){
                     shipCoords.addAll(tempCoords);
+                    System.out.println(tempCoords);
+                    if (tempCoords.size() == 4) {
+                        BattleShip ship = new BattleShip("Destroyer", tempCoords);
+                        ships.add(ship);
+                    }
+                    else{
+                        BattleShip ship = new BattleShip("Battleship", tempCoords);
+                        ships.add(ship);
+                    }
                     shipPlaced = true;
                 }
             }
@@ -174,8 +219,18 @@ public class Game {
                         break;
                     }
                 }
+
                 if(!tempCoords.isEmpty()){
                     shipCoords.addAll(tempCoords);
+                    System.out.println(tempCoords);
+                    if (tempCoords.size() == 4) {
+                        BattleShip ship = new BattleShip("Destroyer", tempCoords);
+                        ships.add(ship);
+                    }
+                    else{
+                        BattleShip ship = new BattleShip("Battleship", tempCoords);
+                        ships.add(ship);
+                    }
                     shipPlaced = true;
                 }
             }
