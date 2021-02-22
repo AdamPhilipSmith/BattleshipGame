@@ -9,7 +9,7 @@ public class Grid {
         String[] columnLetters= new String[]{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J"};
         System.out.println(" ╔═════╦═════╦═════╦═════╦═════╦═════╦═════╦═════╦═════╦═════╗");
 
-        for(int i=0; i<10; i++){
+        for(int i=9; i>=0; i--){
             System.out.print(i);
             for(int k =0; k<11; k++) {
                 String coords = "";
@@ -27,7 +27,7 @@ public class Grid {
                     System.out.print("║     ");
                 }
             }
-            if (i<9) {
+            if (i>0) {
                 System.out.println("\n" + " ╠═════╬═════╬═════╬═════╬═════╬═════╬═════╬═════╬═════╬═════╣ ");
             }
         }
