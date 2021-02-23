@@ -2,9 +2,15 @@ package battleship;
 
 import java.util.ArrayList;
 
-public class Grid {
+class Grid {
 
-    public static void printGrid(ArrayList<String> hits, ArrayList<String> misses){
+    /**
+     * Prints a grid to console, showing the hits and misses
+     * made by the player.
+     * @param hits direct hits the player has achieved
+     * @param misses misses the player has made
+     */
+    static void printGrid(ArrayList<String> hits, ArrayList<String> misses){
 
         String[] columnLetters= new String[]{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J"};
         System.out.println(" ╔═════╦═════╦═════╦═════╦═════╦═════╦═════╦═════╦═════╦═════╗");
@@ -34,5 +40,6 @@ public class Grid {
 
         System.out.println("\n" + " ╚═════╩═════╩═════╩═════╩═════╩═════╩═════╩═════╩═════╩═════╝");
         System.out.println("    A     B     C     D     E     F     G     H     I     J");
+        System.out.println("Ӿ = Hit \n• = Miss\n");
     }
 }
