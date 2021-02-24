@@ -4,7 +4,7 @@
 
 Java 8 application of a simple Battleships game that runs from the console. Allows a single player to play against the computer trying to sink ships that have been placed at random:
 
-![image](https://user-images.githubusercontent.com/47950278/109014205-d336c800-76ab-11eb-9d6f-e0f1cfc6d897.png)
+![image](https://user-images.githubusercontent.com/47950278/109015960-94a20d00-76ad-11eb-8b71-c01cd7acfefb.png)
 
 <b>Technologies Used:</b> Java 8
 
