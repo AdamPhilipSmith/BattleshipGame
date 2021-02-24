@@ -13,7 +13,7 @@ class Game {
   private static ArrayList<String> shipCoords = new ArrayList<>();
   private static ArrayList<Battleship> ships = new ArrayList<>();
   private static final char[] characters = new char[]{'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'};
-  private static int guesses = 40;
+  private static int guesses;
   private static boolean moveTaken = false;
   private static boolean hit = false;
   private static boolean gameOver = false;
@@ -22,15 +22,14 @@ class Game {
 
 
   /**
-   * Starts the game, running a loop to keep printing grid
+   * Starts the game, running a loop to keep printing the grid
    * and taking users guesses until game over.
    */
   static void start() {
 
-    // spawns 1x Battleship
+    // Spawns 1x Battleship and 2x Destroyers as per project spec.
+    // More can be added/removed of any size up to 10.
     spawnShip(5);
-
-    //spawns 2x Destroyers
     spawnShip(4);
     spawnShip(4);
 
@@ -73,7 +72,7 @@ class Game {
         break;
       }
 
-      System.out.println("Guesses Left: " + guesses);
+      System.out.println("Shots Taken: " + guesses);
       System.out.println("Ships Left: " + shipsLeft);
       String guess = getUserInput();
       moveTaken = true;
@@ -90,14 +89,14 @@ class Game {
         illegalMove = true;
         continue;
       }
-
+      // checks if the entered coordinates correspond to a ship
       if (shipCoords.contains(guess)) {
 
         //checks the hit is a new hit
         if (!hits.contains(guess)) {
           hits.add(guess);
           hit = true;
-          guesses--;
+          guesses++;
 
           for (Battleship ship : ships) {
             ship.removeCoord(guess);
@@ -110,17 +109,11 @@ class Game {
         if (!misses.contains(guess)) {
           misses.add(guess);
           hit = false;
-          guesses--;
+          guesses++;
         } else {
           duplicateEntry = true;
         }
       }
-
-      if (guesses == 0) {
-        System.out.println("You failed! You ran out of guesses");
-        gameOver = true;
-      }
-
     }
   }
 
@@ -132,6 +125,11 @@ class Game {
    * @param shipLength length of ship.
    */
   private static void spawnShip(int shipLength) {
+    //Prevents infinite loop since a size 10+ ship will never fit on the board.
+    if(shipLength > 10){
+      System.out.println("Please make sure all your ships are size 10 or less.");
+      System.exit(1);
+    }
 
     boolean shipPlaced = false;
 
@@ -151,7 +149,7 @@ class Game {
         for (int i = 0; i < shipLength; i++) {
           String stringCoords = characters[xstartPosition] + String.valueOf(ystartPosition - i);
           tempCoords.add(stringCoords);
-          //checks to see if a ship is already placed at this coord. If so, clears
+          //checks to see if a ship is already placed at this coordinate. If so, clears
           //tempcoords and breaks the loop.
           if (shipCoords.contains(stringCoords)) {
             tempCoords.clear();

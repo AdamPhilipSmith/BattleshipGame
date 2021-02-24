@@ -8,34 +8,33 @@ import java.util.ArrayList;
  * and ship type.
  */
 class Battleship {
-    private ArrayList<String> coords;
-    private String shipType;
-    private boolean killConfirmed = false;
+  private ArrayList<String> coords;
+  private String shipType;
+  private boolean killConfirmed = false;
 
-    Battleship(String shipType, ArrayList<String> coords) {
-        this.coords = coords;
-        this.shipType = shipType;
+  Battleship(String shipType, ArrayList<String> coords) {
+    this.coords = coords;
+    this.shipType = shipType;
+  }
+
+  void removeCoord(String coord) {
+    this.coords.remove(coord);
+  }
+
+  boolean isDead() {
+    if (this.coords.isEmpty()) {
+      killConfirmed = true;
+      return true;
     }
+    return false;
+  }
 
-    void removeCoord(String coord) {
-        this.coords.remove(coord);
-    }
+  String getType() {
+    return this.shipType;
+  }
 
-    boolean isDead() {
-        if (this.coords.isEmpty()) {
-            killConfirmed = true;
-            return true;
-        }
-        return false;
-    }
-
-    String getType() {
-        return this.shipType;
-    }
-
-
-    boolean killConfirmed() {
-        return killConfirmed;
-    }
+  boolean killConfirmed() {
+    return killConfirmed;
+  }
 
 }
